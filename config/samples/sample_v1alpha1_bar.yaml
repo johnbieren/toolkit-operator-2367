@@ -1,12 +1,12 @@
 apiVersion: sample.redhat.com/v1alpha1
-kind: Foo
+kind: Bar
 metadata:
   labels:
-    app.kubernetes.io/name: foo
-    app.kubernetes.io/instance: foo-sample
+    app.kubernetes.io/name: bar
+    app.kubernetes.io/instance: bar-sample
     app.kubernetes.io/part-of: sample-operator
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: sample-operator
-  name: foo-sample
+  name: bar-sample
 spec:
   # TODO(user): Add fields here

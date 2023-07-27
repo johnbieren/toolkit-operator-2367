@@ -8,6 +8,32 @@ rules:
 - apiGroups:
   - sample.redhat.com
   resources:
+  - bars
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sample.redhat.com
+  resources:
+  - bars/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sample.redhat.com
+  resources:
+  - bars/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - sample.redhat.com
+  resources:
   - foos
   verbs:
   - create

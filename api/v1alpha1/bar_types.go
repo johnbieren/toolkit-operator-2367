@@ -23,43 +23,43 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// FooSpec defines the desired state of Foo
-type FooSpec struct {
+// BarSpec defines the desired state of Bar
+type BarSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Foo. Edit foo_types.go to remove/update
-	name string `structtag:"omitempty"`
+	// Foo is an example field of Bar. Edit bar_types.go to remove/update
+	quantity int `structtag:"bar,omitempty"`
+	ownFoo   Foo
 }
 
-// FooStatus defines the observed state of Foo
-type FooStatus struct {
+// BarStatus defines the observed state of Bar
+type BarStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	totalAmount int `structtag:"foo,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Foo is the Schema for the foos API
-type Foo struct {
+// Bar is the Schema for the bars API
+type Bar struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   FooSpec   `json:"spec,omitempty"`
-	Status FooStatus `json:"status,omitempty"`
+	Spec   BarSpec   `json:"spec,omitempty"`
+	Status BarStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// FooList contains a list of Foo
-type FooList struct {
+// BarList contains a list of Bar
+type BarList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Foo `json:"items"`
+	Items           []Bar `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Foo{}, &FooList{})
+	SchemeBuilder.Register(&Bar{}, &BarList{})
 }

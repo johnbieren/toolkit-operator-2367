@@ -22,40 +22,41 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
 )
 
-// FooReconciler reconciles a Foo object
-type FooReconciler struct {
+// BarReconciler reconciles a Bar object
+type BarReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=sample.redhat.com,resources=foos,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=sample.redhat.com,resources=foos/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=sample.redhat.com,resources=foos/finalizers,verbs=update
+//+kubebuilder:rbac:groups=sample.redhat.com,resources=bars,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=sample.redhat.com,resources=bars/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=sample.redhat.com,resources=bars/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Foo object against the actual cluster state, and then
+// the Bar object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
-func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *BarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
-	ctrl.Log.Info("Sample operator")
 
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *BarReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Foo{}).
+		For(&samplev1alpha1.Bar{}).
 		Complete(r)
 }
