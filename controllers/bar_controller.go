@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -49,7 +50,51 @@ type BarReconciler struct {
 func (r *BarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// Gets the bar resource
+	bar := &samplev1alpha1.Bar{}
+	// Gets the resource from the cluster respective to the controller
+	err := r.Client.Get(ctx, req.NamespacedName, bar)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+
+		return ctrl.Result{}, err
+	}
+
+	// Gets the foo resource externally
+	foo := &samplev1alpha1.Foo{}
+	// Defines the parameters for the foo object
+	err = r.Client.Get(ctx, client.ObjectKey{
+
+		Name:      bar.Spec.Foo,
+		Namespace: bar.Namespace,
+	}, foo)
+	if err != nil {
+		// If a bar resource exists without a foo resource, it gets deleted
+		if errors.IsNotFound(err) {
+			err = r.Client.Delete(ctx, bar)
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+			return ctrl.Result{}, nil
+		}
+
+		return ctrl.Result{}, err
+	}
+
+	// Patch/update existing resources
+	patch := client.MergeFrom(bar.DeepCopy())
+	err = ctrl.SetControllerReference(foo, bar, r.Scheme)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// Applies the patch
+	err = r.Client.Patch(ctx, bar, patch)
+	if err != nil && !errors.IsNotFound(err) {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }

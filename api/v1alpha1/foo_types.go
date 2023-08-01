@@ -25,18 +25,16 @@ import (
 
 // FooSpec defines the desired state of Foo
 type FooSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// TotalAmount is an integer that is used to count the amount of bar resources in the cluster;
+	// isn't a variable that's directly interacted with
+	TotalAmount int `json:"totalAmount,omitempty"`
 
-	// Foo is an example field of Foo. Edit foo_types.go to remove/update
-	name string `structtag:"omitempty"`
+	// The `json` flag is used to turn the info into json readable format
+	// The `omitempty` flag makes a parameter optional, lack thereof means manditory
 }
 
 // FooStatus defines the observed state of Foo
 type FooStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	totalAmount int `structtag:"foo,omitempty"`
 }
 
 //+kubebuilder:object:root=true

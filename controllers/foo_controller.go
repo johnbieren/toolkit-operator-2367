@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -50,12 +51,64 @@ func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	// TODO(user): your logic here
 	ctrl.Log.Info("Sample operator")
 
+	// Gets the foo resource from the API
+	foo := &samplev1alpha1.Foo{}
+	// Gets the foo resource from the cluster
+	err := r.Client.Get(ctx, req.NamespacedName, foo)
+	// Checks for errors, if none, continue
+	if err != nil {
+		if errors.IsNotFound(err) {
+			// The "," means several items are returned; results and nil is returned to err
+			return ctrl.Result{}, nil
+		}
+
+		return ctrl.Result{}, err
+	}
+	// kubectl delete bar bar-ngs2d
+	// Gets a list of all the bar resources
+	bars := &samplev1alpha1.BarList{}
+
+	// Gets the name of the relevant foo resource
+	err = r.Client.List(ctx, bars,
+		client.InNamespace(foo.Namespace),
+		// Specifies where you get the name of the foo resource
+		client.MatchingFields{"spec.foo": foo.Name})
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// Patch: used to update existing resources in the cluster
+	// DeepCopy: does a full copy of the resource
+	patch := client.MergeFrom(foo.DeepCopy())
+	foo.Spec.TotalAmount = 0
+	// _ is used as a blank referece to iterate through a List; () are not needed for For and If/Else
+	for _, bar := range bars.Items {
+		foo.Spec.TotalAmount += bar.Spec.Quantity
+	}
+	// Implements the patch/updates the resource
+	err = r.Client.Patch(ctx, foo, patch)
+	if err != nil && !errors.IsNotFound(err) {
+		return ctrl.Result{}, err
+	}
+
 	return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	// cache
+	// Gets the index of a resource and adds it to the array
+	indexFunc := func(obj client.Object) []string {
+		return []string{obj.(*samplev1alpha1.Bar).Spec.Foo}
+	}
+	// Gets the cache so the resources actually work when being added
+	err := mgr.GetCache().IndexField(context.Background(), &samplev1alpha1.Bar{}, "spec.foo", indexFunc)
+	if err != nil {
+		return err
+	}
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&samplev1alpha1.Foo{}).
+		// Foo owns Bar
+		Owns(&samplev1alpha1.Bar{}).
 		Complete(r)
 }

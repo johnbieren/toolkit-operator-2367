@@ -10,3 +10,4 @@ metadata:
   name: foo-sample
 spec:
   # TODO(user): Add fields here
+  # Sample files are used to help define how resources are created and can be modified indefinetly

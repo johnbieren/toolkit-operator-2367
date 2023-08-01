@@ -25,18 +25,16 @@ import (
 
 // BarSpec defines the desired state of Bar
 type BarSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Bar. Edit bar_types.go to remove/update
-	quantity int `structtag:"bar,omitempty"`
-	ownFoo   Foo
+	// Quantity defines the number associated with the bar resource
+	// Json:"foo" defines how this object will be refered to elsewhere
+	Quantity int `json:"quantity"`
+	// Foo references the Foo owner which is then passed as a string
+	Foo string `json:"foo"`
 }
 
 // BarStatus defines the observed state of Bar
 type BarStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true
