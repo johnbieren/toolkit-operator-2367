@@ -19,10 +19,12 @@ package controllers
 import (
 	"context"
 
+	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/cluster"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
@@ -32,6 +34,7 @@ import (
 type BarReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	log    *logr.Logger
 }
 
 //+kubebuilder:rbac:groups=sample.redhat.com,resources=bars,verbs=get;list;watch;create;update;patch;delete
@@ -97,6 +100,16 @@ func (r *BarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	}
 
 	return ctrl.Result{}, nil
+}
+
+func (c *BarReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
+	c.Client = mgr.GetClient()
+	c.log = log
+	c.log.WithName("bar")
+
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&samplev1alpha1.Bar{}).
+		Complete(c)
 }
 
 // SetupWithManager sets up the controller with the Manager.

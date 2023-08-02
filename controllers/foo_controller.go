@@ -19,10 +19,12 @@ package controllers
 import (
 	"context"
 
+	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/cluster"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
 )
@@ -31,6 +33,7 @@ import (
 type FooReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	log    *logr.Logger
 }
 
 //+kubebuilder:rbac:groups=sample.redhat.com,resources=foos,verbs=get;list;watch;create;update;patch;delete
@@ -94,18 +97,26 @@ func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	return ctrl.Result{}, nil
 }
 
-// SetupWithManager sets up the controller with the Manager.
-func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	// cache
-	// Gets the index of a resource and adds it to the array
+func (c *FooReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
+	c.Client = mgr.GetClient()
+	c.log = log
+	c.log.WithName("foo")
+
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&samplev1alpha1.Foo{}).
+		Complete(c)
+}
+
+func (c *FooReconciler) SetupCache(mgr ctrl.Manager) error {
 	indexFunc := func(obj client.Object) []string {
 		return []string{obj.(*samplev1alpha1.Bar).Spec.Foo}
 	}
-	// Gets the cache so the resources actually work when being added
-	err := mgr.GetCache().IndexField(context.Background(), &samplev1alpha1.Bar{}, "spec.foo", indexFunc)
-	if err != nil {
-		return err
-	}
+
+	return mgr.GetCache().IndexField(context.Background(), &samplev1alpha1.Foo{}, "spec.bar", indexFunc)
+}
+
+// SetupWithManager sets up the controller with the Manager.
+func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&samplev1alpha1.Foo{}).
 		// Foo owns Bar
