@@ -23,8 +23,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/cluster"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
 )
@@ -103,7 +105,7 @@ func (c *FooReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster clu
 	c.log.WithName("foo")
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Foo{}).
+		For(&samplev1alpha1.Foo{}, builder.WithPredicates(predicate.GenerationChangedPredicate{})).
 		Complete(c)
 }
 
