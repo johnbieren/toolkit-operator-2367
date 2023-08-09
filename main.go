@@ -33,10 +33,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/redhat-appstudio/operator-toolkit/controller"
-	"github.com/redhat-appstudio/operator-toolkit/webhook"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
-	"github/troy/sample-operator/api/v1alpha1/webhooks"
 	"github/troy/sample-operator/controllers"
 	// "github/troy/sample-operator/controllers"
 	//+kubebuilder:scaffold:imports
@@ -100,14 +98,6 @@ func main() {
 	if err != nil {
 		setupLog.Error(err, "unable to setup controllers")
 		os.Exit(1)
-	}
-
-	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
-		err = webhook.SetupWebhooks(mgr, webhooks.EnabledWebhooks...)
-		if err != nil {
-			setupLog.Error(err, "unable to setup webhooks")
-			os.Exit(1)
-		}
 	}
 	//+kubebuilder:scaffold:builder
 

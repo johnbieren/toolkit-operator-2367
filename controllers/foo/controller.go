@@ -20,8 +20,9 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
+	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -29,13 +30,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
 	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
+	"github/troy/sample-operator/loader"
 )
 
 // FooReconciler reconciles a Foo object
-type FooReconciler struct {
+type Controller struct {
 	client.Client
-	Scheme *runtime.Scheme
-	log    *logr.Logger
+	log *logr.Logger
 }
 
 //+kubebuilder:rbac:groups=sample.redhat.com,resources=foos,verbs=get;list;watch;create;update;patch;delete
@@ -51,8 +52,8 @@ type FooReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
-func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	// logger := r.log.WithValues("Foo", req.NamespacedName)
+func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	logger := r.log.WithValues("Foo", req.NamespacedName)
 	// TODO(user): your logic here
 	ctrl.Log.Info("Sample operator")
 
@@ -99,19 +100,19 @@ func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 	return ctrl.Result{}, nil
 
-	// adapter := NewAdapter(ctx, r.Client, foo, loader.NewLoader(), &logger)
+	adapter := NewAdapter(ctx, r.Client, &v1alpha1.Foo{}, loader.NewLoader(), &logger)
 
-	// return controller.ReconcileHandler([]controller.Operation{
-	// 	adapter.EnsureFinalizersAreCalled,
-	// 	adapter.EnsureFinalizerIsAdded,
-	// 	adapter.EnsureMaximumReplicas,
-	// 	adapter.EnsureMinimumReplicas,
-	// 	adapter.EnsureReplicaDataConsistency,
-	// })
+	return controller.ReconcileHandler([]controller.Operation{
+		adapter.EnsureFinalizersAreCalled,
+		adapter.EnsureFinalizerIsAdded,
+		adapter.EnsureMaximumReplicas,
+		adapter.EnsureMinimumReplicas,
+		adapter.EnsureReplicaDataConsistency,
+	})
 
 }
 
-func (c *FooReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
+func (c *Controller) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
 	c.Client = mgr.GetClient()
 	c.log = log
 	c.log.WithName("foo")
@@ -121,19 +122,10 @@ func (c *FooReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster clu
 		Complete(c)
 }
 
-func (c *FooReconciler) SetupCache(mgr ctrl.Manager) error {
+func (c *Controller) SetupCache(mgr ctrl.Manager) error {
 	indexFunc := func(obj client.Object) []string {
 		return []string{obj.(*samplev1alpha1.Bar).Spec.Foo}
 	}
 
 	return mgr.GetCache().IndexField(context.Background(), &samplev1alpha1.Foo{}, "spec.bar", indexFunc)
-}
-
-// SetupWithManager sets up the controller with the Manager.
-func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Foo{}).
-		// Foo owns Bar
-		Owns(&samplev1alpha1.Bar{}).
-		Complete(r)
 }

@@ -31,7 +31,7 @@ import (
 )
 
 // BarReconciler reconciles a Bar object
-type BarReconciler struct {
+type Controller struct {
 	client.Client
 	Scheme *runtime.Scheme
 	log    *logr.Logger
@@ -50,7 +50,7 @@ type BarReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
-func (r *BarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	// Gets the bar resource
@@ -102,7 +102,7 @@ func (r *BarReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	return ctrl.Result{}, nil
 }
 
-func (c *BarReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
+func (c *Controller) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
 	c.Client = mgr.GetClient()
 	c.log = log
 	c.log.WithName("bar")
@@ -113,7 +113,7 @@ func (c *BarReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster clu
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *BarReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *Controller) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&samplev1alpha1.Bar{}).
 		Complete(r)

@@ -17,7 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/redhat-appstudio/operator-goodies/conditions"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -62,8 +61,4 @@ type FooList struct {
 
 func init() {
 	SchemeBuilder.Register(&Foo{}, &FooList{})
-}
-
-func (f *Foo) MarkValidationFailed(message string) {
-	conditions.SetConditionWithMessage(&f.Status.Conditions, validatedConditionType, metav1.ConditionFalse, FailedReason, message)
 }
