@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controllers
+package foo
 
 import (
 	"context"
@@ -52,7 +52,7 @@ type FooReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-
+	// logger := r.log.WithValues("Foo", req.NamespacedName)
 	// TODO(user): your logic here
 	ctrl.Log.Info("Sample operator")
 
@@ -69,6 +69,7 @@ func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 		return ctrl.Result{}, err
 	}
+
 	// kubectl delete bar bar-ngs2d
 	// Gets a list of all the bar resources
 	bars := &samplev1alpha1.BarList{}
@@ -97,6 +98,17 @@ func (r *FooReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	}
 
 	return ctrl.Result{}, nil
+
+	// adapter := NewAdapter(ctx, r.Client, foo, loader.NewLoader(), &logger)
+
+	// return controller.ReconcileHandler([]controller.Operation{
+	// 	adapter.EnsureFinalizersAreCalled,
+	// 	adapter.EnsureFinalizerIsAdded,
+	// 	adapter.EnsureMaximumReplicas,
+	// 	adapter.EnsureMinimumReplicas,
+	// 	adapter.EnsureReplicaDataConsistency,
+	// })
+
 }
 
 func (c *FooReconciler) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {
