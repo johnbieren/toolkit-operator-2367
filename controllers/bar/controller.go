@@ -19,15 +19,18 @@ package bar
 import (
 	"context"
 
+	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
+	"github/troy/sample-operator/loader"
+
 	"github.com/go-logr/logr"
+	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
+	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/cluster"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-
-	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
 )
 
 // BarReconciler reconciles a Bar object
@@ -52,6 +55,7 @@ type Controller struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
+	logger := r.log.WithValues("Bar", req.NamespacedName)
 
 	// Gets the bar resource
 	bar := &samplev1alpha1.Bar{}
@@ -86,20 +90,11 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, err
 	}
 
-	// Patch/update existing resources
-	patch := client.MergeFrom(bar.DeepCopy())
-	err = ctrl.SetControllerReference(foo, bar, r.Scheme)
-	if err != nil {
-		return ctrl.Result{}, err
-	}
+	adapter := newAdapter(ctx, r.Client, &v1alpha1.Bar{}, loader.NewLoader(), &logger)
 
-	// Applies the patch
-	err = r.Client.Patch(ctx, bar, patch)
-	if err != nil && !errors.IsNotFound(err) {
-		return ctrl.Result{}, err
-	}
-
-	return ctrl.Result{}, nil
+	return controller.ReconcileHandler([]controller.Operation{
+		adapter.EnsureOwnerReferenceIsSet,
+	})
 }
 
 func (c *Controller) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluster.Cluster) error {

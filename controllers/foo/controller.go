@@ -71,36 +71,7 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, err
 	}
 
-	// kubectl delete bar bar-ngs2d
-	// Gets a list of all the bar resources
-	bars := &samplev1alpha1.BarList{}
-
-	// Gets the name of the relevant foo resource
-	err = r.Client.List(ctx, bars,
-		client.InNamespace(foo.Namespace),
-		// Specifies where you get the name of the foo resource
-		client.MatchingFields{"spec.foo": foo.Name})
-	if err != nil {
-		return ctrl.Result{}, err
-	}
-
-	// Patch: used to update existing resources in the cluster
-	// DeepCopy: does a full copy of the resource
-	patch := client.MergeFrom(foo.DeepCopy())
-	foo.Spec.TotalAmount = 0
-	// _ is used as a blank referece to iterate through a List; () are not needed for For and If/Else
-	for _, bar := range bars.Items {
-		foo.Spec.TotalAmount += bar.Spec.Quantity
-	}
-	// Implements the patch/updates the resource
-	err = r.Client.Patch(ctx, foo, patch)
-	if err != nil && !errors.IsNotFound(err) {
-		return ctrl.Result{}, err
-	}
-
-	return ctrl.Result{}, nil
-
-	adapter := NewAdapter(ctx, r.Client, &v1alpha1.Foo{}, loader.NewLoader(), &logger)
+	adapter := newAdapter(ctx, r.Client, &v1alpha1.Foo{}, loader.NewLoader(), &logger)
 
 	return controller.ReconcileHandler([]controller.Operation{
 		adapter.EnsureFinalizersAreCalled,
