@@ -69,31 +69,11 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, err
 	}
 
-	// Gets the foo resource externally
-	foo := &samplev1alpha1.Foo{}
-	// Defines the parameters for the foo object
-	err = r.Client.Get(ctx, client.ObjectKey{
-
-		Name:      bar.Spec.Foo,
-		Namespace: bar.Namespace,
-	}, foo)
-	if err != nil {
-		// If a bar resource exists without a foo resource, it gets deleted
-		if errors.IsNotFound(err) {
-			err = r.Client.Delete(ctx, bar)
-			if err != nil {
-				return ctrl.Result{}, err
-			}
-			return ctrl.Result{}, nil
-		}
-
-		return ctrl.Result{}, err
-	}
-
 	adapter := newAdapter(ctx, r.Client, &v1alpha1.Bar{}, loader.NewLoader(), &logger)
 
 	return controller.ReconcileHandler([]controller.Operation{
 		adapter.EnsureOwnerReferenceIsSet,
+		adapter.EnsureBarIsTiedToFoo,
 	})
 }
 

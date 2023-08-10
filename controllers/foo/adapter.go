@@ -23,7 +23,7 @@ type adapter struct {
 }
 
 // NewAdapter creates and returns an Adapter instance.
-func NewAdapter(ctx context.Context, client client.Client, foo *v1alpha1.Foo, loader loader.ObjectLoader, logger *logr.Logger) *adapter {
+func newAdapter(ctx context.Context, client client.Client, foo *v1alpha1.Foo, loader loader.ObjectLoader, logger *logr.Logger) *adapter {
 	return &adapter{
 		client: client,
 		ctx:    ctx,

@@ -52,3 +52,28 @@ func (a *adapter) EnsureOwnerReferenceIsSet() (controller.OperationResult, error
 
 	return controller.ContinueProcessing()
 }
+
+func (a *adapter) EnsureBarIsTiedToFoo() (controller.OperationResult, error) {
+	foo, err := a.loader.GetFoo(a.ctx, a.client, a.bar.Spec.Foo, a.bar.Namespace)
+	if err != nil {
+		return controller.RequeueWithError(err)
+	}
+	err = a.client.Get(a.ctx, client.ObjectKey{
+
+		Name:      a.bar.Spec.Foo,
+		Namespace: a.bar.Namespace,
+	}, foo)
+	if err != nil {
+		// If a bar resource exists without a foo resource, it gets deleted
+		if errors.IsNotFound(err) {
+			err = a.client.Delete(a.ctx, a.bar)
+			if err != nil {
+				return controller.RequeueWithError(err)
+			}
+			return controller.RequeueWithError(err)
+		}
+
+		return controller.RequeueWithError(err)
+	}
+	return controller.ContinueProcessing()
+}
