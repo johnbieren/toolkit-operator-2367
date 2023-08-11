@@ -35,7 +35,6 @@ type FooSpec struct {
 
 // FooStatus defines the observed state of Foo
 type FooStatus struct {
-	Conditions []metav1.Condition `json:"conditions"`
 }
 
 //+kubebuilder:object:root=true

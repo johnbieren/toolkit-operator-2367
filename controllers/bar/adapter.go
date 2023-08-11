@@ -3,8 +3,9 @@ package bar
 import (
 	"context"
 
+	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+
 	"github.com/go-logr/logr"
-	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
 	"github.com/redhat-appstudio/operator-toolkit-example/loader"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -14,7 +15,7 @@ import (
 
 // Adapter holds the objects needed to reconcile a Bar resource.
 type adapter struct {
-	bar    *v1alpha1.Bar // this is the kind of resource this adapter reconciles
+	bar    *samplev1alpha1.Bar // this is the kind of resource this adapter reconciles
 	client client.Client
 	ctx    context.Context
 	loader loader.ObjectLoader
@@ -22,7 +23,7 @@ type adapter struct {
 }
 
 // NewAdapter creates and returns an Adapter instance.
-func newAdapter(ctx context.Context, client client.Client, bar *v1alpha1.Bar, loader loader.ObjectLoader, logger *logr.Logger) *adapter {
+func newAdapter(ctx context.Context, client client.Client, bar *samplev1alpha1.Bar, loader loader.ObjectLoader, logger *logr.Logger) *adapter {
 	return &adapter{
 		bar:    bar,
 		client: client,

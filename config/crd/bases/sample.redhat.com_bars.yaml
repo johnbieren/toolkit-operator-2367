@@ -41,6 +41,7 @@ spec:
                 type: string
               quantity:
                 description: Quantity defines the number associated with the bar resource
+                  Json:"foo" defines how this object will be refered to elsewhere
                 type: integer
             required:
             - foo

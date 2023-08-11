@@ -19,6 +19,8 @@ package foo
 import (
 	"context"
 
+	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+
 	"github.com/go-logr/logr"
 	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
@@ -29,8 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cluster"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
-	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
-	"github/troy/sample-operator/loader"
+	"github.com/Troy876/toolkit-operator-2367/loader"
 )
 
 // FooReconciler reconciles a Foo object

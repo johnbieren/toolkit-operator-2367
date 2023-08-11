@@ -19,11 +19,10 @@ package bar
 import (
 	"context"
 
-	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
-	"github/troy/sample-operator/loader"
+	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/loader"
 
 	"github.com/go-logr/logr"
-	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -69,7 +68,7 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, err
 	}
 
-	adapter := newAdapter(ctx, r.Client, &v1alpha1.Bar{}, loader.NewLoader(), &logger)
+	adapter := newAdapter(ctx, r.Client, &samplev1alpha1.Bar{}, loader.NewLoader(), &logger)
 
 	return controller.ReconcileHandler([]controller.Operation{
 		adapter.EnsureOwnerReferenceIsSet,

@@ -34,9 +34,8 @@ import (
 
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 
-	samplev1alpha1 "github/troy/sample-operator/api/v1alpha1"
-	"github/troy/sample-operator/controllers"
-	// "github/troy/sample-operator/controllers"
+	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

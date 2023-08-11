@@ -8,8 +8,8 @@ layout:
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
-projectName: sample-operator
-repo: github/troy/sample-operator
+projectName: toolkit-operaotr-2367
+repo: github.com/Troy876/toolkit-operator-2367
 resources:
 - api:
     crdVersion: v1
@@ -18,7 +18,7 @@ resources:
   domain: redhat.com
   group: sample
   kind: Foo
-  path: github/troy/sample-operator/api/v1alpha1
+  path: github.com/Troy876/toolkit-operator-2367/api/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -27,6 +27,6 @@ resources:
   domain: redhat.com
   group: sample
   kind: Bar
-  path: github/troy/sample-operator/api/v1alpha1
+  path: github.com/Troy876/toolkit-operator-2367/api/v1alpha1
   version: v1alpha1
 version: "3"
