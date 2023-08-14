@@ -3,7 +3,7 @@ package loader
 import (
 	"context"
 
-	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
 	toolkit "github.com/redhat-appstudio/operator-toolkit/loader"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

@@ -19,10 +19,9 @@ package foo
 import (
 	"context"
 
-	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
 
 	"github.com/go-logr/logr"
-	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -59,7 +58,7 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	ctrl.Log.Info("Sample operator")
 
 	// Gets the foo resource from the API
-	foo := &samplev1alpha1.Foo{}
+	foo := &v1alpha1.Foo{}
 	// Gets the foo resource from the cluster
 	err := r.Client.Get(ctx, req.NamespacedName, foo)
 	// Checks for errors, if none, continue
@@ -90,14 +89,14 @@ func (c *Controller) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluste
 	c.log.WithName("foo")
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Foo{}, builder.WithPredicates(predicate.GenerationChangedPredicate{})).
+		For(&v1alpha1.Foo{}, builder.WithPredicates(predicate.GenerationChangedPredicate{})).
 		Complete(c)
 }
 
 func (c *Controller) SetupCache(mgr ctrl.Manager) error {
 	indexFunc := func(obj client.Object) []string {
-		return []string{obj.(*samplev1alpha1.Bar).Spec.Foo}
+		return []string{obj.(*v1alpha1.Bar).Spec.Foo}
 	}
 
-	return mgr.GetCache().IndexField(context.Background(), &samplev1alpha1.Foo{}, "spec.bar", indexFunc)
+	return mgr.GetCache().IndexField(context.Background(), &v1alpha1.Bar{}, "spec.foo", indexFunc)
 }

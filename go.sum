@@ -246,8 +246,6 @@ github.com/prometheus/procfs v0.8.0 h1:ODq8ZFEaYeCaZOJlZZdJA2AbQR98dSHSM1KW/You5
 github.com/prometheus/procfs v0.8.0/go.mod h1:z7EfXMXOkbkqb9IINtpCn86r/to3BnA0uaxHdg830/4=
 github.com/redhat-appstudio/operator-toolkit v0.0.0-20230718130920-bde9ee89a984 h1:ZrCia2FfL9v0eEmoYXNWrtMpLRO4NOwRzBqvVRibjAc=
 github.com/redhat-appstudio/operator-toolkit v0.0.0-20230718130920-bde9ee89a984/go.mod h1:7cX2+4KGZLJ4Yoj+1v0iV5hkCGBzbSd9wkNJQjCdDJs=
-github.com/redhat-appstudio/operator-toolkit-example v0.0.0-20230802132818-a9fa8937f860 h1:uc3IasYVFSAiFztjtiDVQFgjXRDiAmhRvuYS7SAbAkQ=
-github.com/redhat-appstudio/operator-toolkit-example v0.0.0-20230802132818-a9fa8937f860/go.mod h1:z9NCp4meuBWdKmd+Gv09eQAgKdw121nGJRTBCXMxzZ4=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=

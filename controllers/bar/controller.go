@@ -19,7 +19,7 @@ package bar
 import (
 	"context"
 
-	samplev1alpha1 "github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
 	"github.com/Troy876/toolkit-operator-2367/loader"
 
 	"github.com/go-logr/logr"
@@ -57,7 +57,7 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	logger := r.log.WithValues("Bar", req.NamespacedName)
 
 	// Gets the bar resource
-	bar := &samplev1alpha1.Bar{}
+	bar := &v1alpha1.Bar{}
 	// Gets the resource from the cluster respective to the controller
 	err := r.Client.Get(ctx, req.NamespacedName, bar)
 	if err != nil {
@@ -68,7 +68,7 @@ func (r *Controller) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, err
 	}
 
-	adapter := newAdapter(ctx, r.Client, &samplev1alpha1.Bar{}, loader.NewLoader(), &logger)
+	adapter := newAdapter(ctx, r.Client, &v1alpha1.Bar{}, loader.NewLoader(), &logger)
 
 	return controller.ReconcileHandler([]controller.Operation{
 		adapter.EnsureOwnerReferenceIsSet,
@@ -82,13 +82,13 @@ func (c *Controller) Register(mgr ctrl.Manager, log *logr.Logger, cluster cluste
 	c.log.WithName("bar")
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Bar{}).
+		For(&v1alpha1.Bar{}).
 		Complete(c)
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *Controller) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&samplev1alpha1.Bar{}).
+		For(&v1alpha1.Bar{}).
 		Complete(r)
 }

@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/go-logr/logr v1.2.3
 	github.com/redhat-appstudio/operator-toolkit v0.0.0-20230718130920-bde9ee89a984
-	github.com/redhat-appstudio/operator-toolkit-example v0.0.0-20230802132818-a9fa8937f860
 	k8s.io/apimachinery v0.26.1
 	k8s.io/client-go v0.26.1
 	sigs.k8s.io/controller-runtime v0.14.6

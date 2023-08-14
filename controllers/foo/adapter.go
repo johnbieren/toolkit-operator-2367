@@ -3,10 +3,10 @@ package foo
 import (
 	"context"
 
+	"github.com/Troy876/toolkit-operator-2367/api/v1alpha1"
+	"github.com/Troy876/toolkit-operator-2367/loader"
 	"github.com/go-logr/logr"
-	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
 
-	"github.com/redhat-appstudio/operator-toolkit-example/loader"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
