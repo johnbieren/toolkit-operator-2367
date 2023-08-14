@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/redhat-appstudio/operator-toolkit-example/api/v1alpha1"
+
 	"github.com/redhat-appstudio/operator-toolkit-example/loader"
 	"github.com/redhat-appstudio/operator-toolkit/controller"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -191,3 +192,32 @@ func (a *adapter) finalizeResource() error {
 
 	return nil
 }
+
+// func (a *adapter) countOwnedBars() error {
+// bars, err := a.loader.GetBars(a.ctx, a.client, a.foo)
+// if err != nil {
+// 	return err
+// }
+
+// // Gets the name of the relevant foo resource
+// err = a.client.List(a.ctx, bars,
+// 	client.InNamespace(a.foo.Namespace),
+// 	// Specifies where you get the name of the foo resource
+// 	client.MatchingFields{"spec.foo": a.foo.Name})
+// if err != nil {
+// 	return ctrl.Result{}, err
+// }
+
+// patch := client.MergeFrom(a.foo.DeepCopy())
+// a.foo.Spec.TotalAmount = 0
+// // _ is used as a blank referece to iterate through a List; () are not needed for For and If/Else
+// for _, bar := range bars {
+// 	a.foo.Spec.TotalAmount += bar.Spec.Quantity
+// }
+// // Implements the patch/updates the resource
+// err = a.client.Patch(a.ctx, a.foo, patch)
+// if err != nil && !errors.IsNotFound(err) {
+// 	return ctrl.Result{}, err
+// }
+// return nil
+// }
